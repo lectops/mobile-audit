@@ -1,0 +1,62 @@
+# Python environments, packaging and caches
+.venv/
+.conversion-venv/
+venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.coverage
+htmlcov/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+config.local.yaml
+config/*.local.yaml
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Model weights and downloaded third-party source (never Git/LFS)
+models/
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.onnx
+tools/llama.cpp/
+tools/convert_hf_to_gguf.py
+
+# Reports and repository-derived data
+SecurityReports/
+reports/
+audit-output/
+*.sarif
+*.log
+findings.json
+coverage.json
+metadata.json
+index.json
+report.html
+report.md
+
+# Machine-specific installation records (retained locally)
+docs/HANDOVER.md
+docs/environment-inventory.md
+docs/doctor.json
+docs/models.json
+docs/validation-results.json
+docs/fixture-hashes.json
+
+# Editor/macOS files
+.DS_Store
+.idea/
+.vscode/

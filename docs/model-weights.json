@@ -1,0 +1,30 @@
+{
+  "repository": "https://huggingface.co/fdtn-ai/Foundation-Sec-8B-Reasoning",
+  "revision": "63c930c82d7646226d33502bec5870019738400e",
+  "quantization": "Q4_K_M",
+  "format": "GGUF",
+  "converter_revision": "31288c9c66e59377f7788d920678a565bb89dd37",
+  "weights": {
+    "model-00001-of-00004.safetensors": {
+      "bytes": 4943283072,
+      "sha256": "51f7069dfb046809ee1370eccea47c14063efb8e54d5eaf4d1b4cc7337b688da"
+    },
+    "model-00002-of-00004.safetensors": {
+      "bytes": 4991413968,
+      "sha256": "272b260e54e985bb9b31c1cd3cc4e2369cc42a7959ba347c0d1adaf2eb55ab97"
+    },
+    "model-00003-of-00004.safetensors": {
+      "bytes": 4968548944,
+      "sha256": "7b8349ce9f38173e36f0f86843309c948bac43f0e5ee8b042f4aa9e0d05f2f62"
+    },
+    "model-00004-of-00004.safetensors": {
+      "bytes": 1157638072,
+      "sha256": "42f13e3105f0fdd3048218d2b343230cdb2342a374b3b5fb345b39c4f4e59021"
+    },
+    "foundation-sec-q4_k_m.gguf": {
+      "bytes": 4920851232,
+      "sha256": "8cc2035330ad8e3bdd46f3c0e831e113e7cbdefdc8d40243723888ba2ac13173"
+    }
+  },
+  "official_hashes_verified": true
+}

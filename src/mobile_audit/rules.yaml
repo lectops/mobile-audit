@@ -1,0 +1,181 @@
+rules:
+- id: mobile-audit.tls-bypass
+  languages:
+  - generic
+  severity: WARNING
+  message: Certificate validation bypass
+  metadata:
+    cwe: CWE-295
+    provenance: mobile-audit local rules v1
+  pattern-regex: handler\.proceed\s*\(|rejectUnauthorized\s*:\s*false|badCertificateCallback\s*=
+- id: mobile-audit.token-logging
+  languages:
+  - generic
+  severity: WARNING
+  message: Sensitive value logging
+  metadata:
+    cwe: CWE-532
+    provenance: mobile-audit local rules v1
+  pattern-regex: (Log\.[divwe]|console\.log|print|NSLog)\s*\([^\n]*(token|password|secret)
+- id: mobile-audit.webview
+  languages:
+  - generic
+  severity: WARNING
+  message: WebView file access enabled
+  metadata:
+    cwe: CWE-200
+    provenance: mobile-audit local rules v1
+  pattern-regex: setAllow(FileAccess|UniversalAccessFromFileURLs|FileAccessFromFileURLs)\s*\(\s*true
+- id: mobile-audit.exported
+  languages:
+  - generic
+  severity: WARNING
+  message: Exported component authorization requires review
+  metadata:
+    cwe: CWE-926
+    provenance: mobile-audit local rules v1
+  pattern-regex: android:exported\s*=\s*"true"
+- id: mobile-audit.cleartext
+  languages:
+  - generic
+  severity: WARNING
+  message: Cleartext transport configuration
+  metadata:
+    cwe: CWE-319
+    provenance: mobile-audit local rules v1
+  pattern-regex: android:usesCleartextTraffic\s*=\s*"true"|NSAllowsArbitraryLoads|http://(?!schemas\.android\.com)
+- id: mobile-audit.crypto
+  languages:
+  - generic
+  severity: WARNING
+  message: Weak cryptography
+  metadata:
+    cwe: CWE-327
+    provenance: mobile-audit local rules v1
+  pattern-regex: MD5|AES/ECB|DES/ECB
+- id: mobile-audit.storage
+  languages:
+  - generic
+  severity: WARNING
+  message: Potential insecure token storage
+  metadata:
+    cwe: CWE-922
+    provenance: mobile-audit local rules v1
+  pattern-regex: MODE_WORLD_READABLE|AsyncStorage\.setItem\s*\(\s*[\x27\"]token
+- id: mobile-audit.credential
+  languages:
+  - generic
+  severity: WARNING
+  message: Hardcoded credential-like value
+  metadata:
+    cwe: CWE-798
+    provenance: mobile-audit local rules v1
+  pattern-regex: (?i)(password|api_key|secret)\s*[=:]\s*[\x27\"][^\x27\"\n]{8,}[\x27\"]
+- id: mobile-audit.trust-manager
+  languages:
+  - generic
+  severity: WARNING
+  message: Empty certificate trust check
+  metadata:
+    cwe: CWE-295
+    provenance: mobile-audit local rules v1
+  pattern-regex: checkServerTrusted\s*\([^)]*\)\s*\{\s*\}
+- id: mobile-audit.swift-trust
+  languages:
+  - generic
+  severity: WARNING
+  message: Custom server trust acceptance requires review
+  metadata:
+    cwe: CWE-295
+    provenance: mobile-audit local rules v1
+  pattern-regex: URLCredential\(trust:|serverTrustPolicy.*disableEvaluation
+- id: mobile-audit.webview-js-interface
+  languages:
+  - generic
+  severity: WARNING
+  message: Native bridge exposed to WebView JavaScript
+  metadata:
+    cwe: CWE-749
+    provenance: mobile-audit local rules v1
+  pattern-regex: addJavascriptInterface\s*\(
+- id: mobile-audit.js-eval
+  languages:
+  - generic
+  severity: WARNING
+  message: Dynamic evaluation requires untrusted-input review
+  metadata:
+    cwe: CWE-95
+    provenance: mobile-audit local rules v1
+  pattern-regex: \beval\s*\(
+- id: mobile-audit.sql-interpolation
+  languages:
+  - generic
+  severity: WARNING
+  message: Interpolated SQL may allow injection
+  metadata:
+    cwe: CWE-89
+    provenance: mobile-audit local rules v1
+  pattern-regex: (?i)(SELECT|DELETE|UPDATE|INSERT)[^\n]*(\$\{|"\s*\+)
+- id: mobile-audit.debuggable
+  languages:
+  - generic
+  severity: WARNING
+  message: Android debugging enabled
+  metadata:
+    cwe: CWE-489
+    provenance: mobile-audit local rules v1
+  pattern-regex: android:debuggable\s*=\s*"true"
+- id: mobile-audit.weak-random
+  languages:
+  - generic
+  severity: WARNING
+  message: Noncryptographic randomness requires security-use review
+  metadata:
+    cwe: CWE-338
+    provenance: mobile-audit local rules v1
+  pattern-regex: Math\.random\s*\(|java\.util\.Random|Random\(\)
+- id: mobile-audit.ios-accessible
+  languages:
+  - generic
+  severity: WARNING
+  message: Review Keychain accessibility for sensitive data
+  metadata:
+    cwe: CWE-922
+    provenance: mobile-audit local rules v1
+  pattern-regex: kSecAttrAccessibleAlways|kSecAttrAccessibleAfterFirstUnlock
+- id: mobile-audit.intent-uri
+  languages:
+  - generic
+  severity: WARNING
+  message: Deep-link input crosses trust boundary; verify validation
+  metadata:
+    cwe: CWE-20
+    provenance: mobile-audit local rules v1
+  pattern-regex: Intent\.parseUri\s*\(|getIntent\(\)\.getData
+- id: mobile-audit.jwt-decode
+  languages:
+  - generic
+  severity: WARNING
+  message: JWT decoding alone does not validate authenticity
+  metadata:
+    cwe: CWE-347
+    provenance: mobile-audit local rules v1
+  pattern-regex: jwtDecode\s*\(|jwt\.decode\s*\(
+- id: mobile-audit.rn-storage
+  languages:
+  - generic
+  severity: WARNING
+  message: Sensitive data may use unprotected preferences
+  metadata:
+    cwe: CWE-922
+    provenance: mobile-audit local rules v1
+  pattern-regex: (AsyncStorage|SharedPreferences|UserDefaults)[^\n]*(token|password|secret)
+- id: mobile-audit.objc-webview
+  languages:
+  - generic
+  severity: WARNING
+  message: Legacy or permissive WebView requires review
+  metadata:
+    cwe: CWE-749
+    provenance: mobile-audit local rules v1
+  pattern-regex: UIWebView|allowsUniversalAccessFromFileURLs
