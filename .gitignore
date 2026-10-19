@@ -60,3 +60,6 @@ docs/fixture-hashes.json
 .DS_Store
 .idea/
 .vscode/
+
+# Local editor/agent state
+.serena/

@@ -41,24 +41,32 @@ def main(argv=None):
     try:
         check=run(['/usr/bin/true'],root,10)
         if check.returncode:raise RuntimeError('OS isolation unavailable; audit stopped closed')
-        index=discover(root);log('discovery',status=str(len(index['files']))+' files')
+        log('discovery',status='starting')
+        index=discover(root,progress=lambda **counts:log('discovery',status=f"{counts['files']} files indexed; {counts['checked']} checked"));log('discovery',status=str(len(index['files']))+' files')
         (out/'index.json').write_text(json.dumps({**index,'files':[{**f,'imports':[redact(x) for x in f['imports']]} for f in index['files']]},indent=2))
         statuses=[dict(name='discovery',status='partial' if index['errors'] else 'completed',errors=index['errors'])];items=[];mode='quick' if args.quick else 'deep' if args.deep else 'standard'
         with tempfile.TemporaryDirectory(prefix='mobile-audit-') as temp:
             work=Path(temp);stage=work/'source';stage.mkdir()
+            log('snapshot',status='preparing read-only scanner input')
             for f in index['files']:
                 p=safe_path(root,f['path']);target=stage/f['path'];target.parent.mkdir(parents=True,exist_ok=True)
                 # Neutralize scanner control files only in the external snapshot.
                 target.write_bytes(b'' if p.name in {'.semgrepignore','.gitignore','.gitleaksignore'} else p.read_bytes())
             for scanner in ['semgrep','gitleaks','mobsfscan','osv-scanner']:
+                log(scanner,status='starting')
                 remaining=max(1,int(audit_deadline-time.monotonic()))
                 found,status=scan(scanner,root,stage,work,args.deep,min(remaining,config.get('scanner_timeout',240)));items.extend(found);statuses.append(status);log(scanner,status=status['status'],findings=len(found))
+                for warning in (status.get('errors',[])+status.get('coverage_gaps',[]))[:3]:log(scanner,status='warning: '+redact(warning))
             if not args.no_llm:
+                log('primary-model',status='starting')
                 config['primary']['total_timeout']=min(config['primary'].get('total_timeout',900),max(0,int(audit_deadline-time.monotonic())))
-                found,status=investigate_cached(root,index,config['primary'],work,mode,items,config.get('cache_ai',True));items.extend(found);statuses.append(status);log('primary-model',status=status['status'],findings=len(found))
-                items=deduplicate(items);config['reviewer']['total_timeout']=min(config['reviewer'].get('total_timeout',900),max(0,int(audit_deadline-time.monotonic())));status=review(root,items,config['reviewer'],work,mode);statuses.append(status);log('reviewer-model',status=status['status'])
+                found,status=investigate_cached(root,index,config['primary'],work,mode,items,config.get('cache_ai',True),progress=lambda **p:log('primary-model',status=f"investigating {p['current']}/{p['total']}, step {p['step']}/{p['steps']}"));items.extend(found);statuses.append(status);log('primary-model',status=status['status'],findings=len(found))
+                for error in status.get('errors',[])[:3]:log('primary-model',status='warning: '+redact(error))
+                log('reviewer-model',status='starting')
+                items=deduplicate(items);config['reviewer']['total_timeout']=min(config['reviewer'].get('total_timeout',900),max(0,int(audit_deadline-time.monotonic())));status=review(root,items,config['reviewer'],work,mode,progress=lambda **p:log('reviewer-model',status=f"reviewing {p['current']}/{p['total']}"));statuses.append(status);log('reviewer-model',status=status['status'])
             else:statuses.append(dict(name='models',status='skipped',errors=['Explicit --no-llm']))
-        after=discover(root);unchanged={f['path']:f['sha256'] for f in index['files']}=={f['path']:f['sha256'] for f in after['files']}
+        log('verification',status='checking source hashes')
+        after=discover(root,index_code=False,progress=lambda **counts:log('verification',status=f"{counts['checked']} files checked"));unchanged={f['path']:f['sha256'] for f in index['files']}=={f['path']:f['sha256'] for f in after['files']}
         items=deduplicate(items);items,rejected=revalidate(root,items)
         statuses.append(dict(name='evidence-validation',status='partial' if rejected else 'completed',rejected_finding_ids=rejected,errors=['Source evidence changed or disappeared'] if rejected else []))
         coverage=dict(files_discovered=len(index['files']),files_excluded=index['excluded'],languages=index['languages'],frameworks=index['frameworks'],subsystems=index['subsystems'],files_submitted_to_scanners=[f['path'] for f in index['files']],checks=statuses,source_unchanged=unchanged,network_isolation='macOS sandbox-exec deny network* enforced for all scanner and inference children',limitations=index['limitations']+['No dynamic testing; exploitability needs manual review.','Primary AI analyzes budgeted snippets only; uninvestigated code remains uncovered.','No incremental reuse: full deterministic scan each audit.','Excluded/unsupported/binary files are not secret-scanned.','Repository ignore configuration is neutralized in the scanner snapshot; mobsf inline suppressions may still limit matches.','Snapshot may race concurrent source edits; avoid editing during audit.'])

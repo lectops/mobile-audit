@@ -135,7 +135,7 @@ def test_cache_hit(repo,tmp_path,monkeypatch):
     from mobile_audit.cache import investigate_cached
     monkeypatch.setattr(Path,'home',classmethod(lambda cls:tmp_path))
     calls=[]
-    def fake(*args):calls.append(1);return [],{'status':'completed'}
+    def fake(*args,**kwargs):calls.append(1);return [],{'status':'completed'}
     monkeypatch.setattr(models,'investigate',fake)
     first=investigate_cached(repo,discover(repo),{'enabled':True},tmp_path,'quick',[])
     second=investigate_cached(repo,discover(repo),{'enabled':True},tmp_path,'quick',[])
