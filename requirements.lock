@@ -11,6 +11,7 @@ click==8.4.2
 click-option-group==0.5.9
 colorama==0.4.6
 cryptography==50.0.2
+editables==0.5
 exceptiongroup==1.2.2
 face==26.0.1
 glom==25.12.0
