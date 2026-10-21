@@ -111,4 +111,4 @@ This repository contains only the auditor, local rules, synthetic fixtures, test
 
 GitHub Actions runs the project's tests against synthetic temporary source on macOS and checks this repository with redacted Gitleaks output. It does not run proprietary audits or download/invoke LLM weights. Actions are pinned to verified upstream commit IDs. Dependency installation happens only during CI setup. Private configuration and real audit artifacts must never be uploaded as workflow artifacts.
 
-The private repository has no open-source license grant. Review third-party notices before redistributing dependencies, model weights, or upstream schema files; see [third-party sources](THIRD_PARTY.md).
+The project's original code is released under the [MIT License](LICENSE). Third-party components keep their own licenses. Review their notices before redistributing dependencies, model weights, or upstream schema files; see [third-party sources](THIRD_PARTY.md).

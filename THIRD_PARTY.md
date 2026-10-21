@@ -11,4 +11,4 @@ Dependencies installed from Python packages and Homebrew keep their upstream lic
 - Qwen and Cisco Foundation-Sec weights: see `docs/model-provenance.md` for source, revision and license information. They are downloaded separately and never committed. Cisco changes are Apache-2.0; the base remains subject to Meta's Llama 3.1 Community License.
 - Rules in `src/mobile_audit/rules.yaml` were authored for this project; report metadata records their provenance and content hash.
 
-A private GitHub repository does not itself grant an open-source license to the project's original code. No upstream license is overridden here.
+The project's original code is MIT-licensed (see [LICENSE](LICENSE)). The MIT grant does not cover the third-party material listed above; `tests/sarif-schema.json` remains under OASIS terms. No upstream license is overridden here.
